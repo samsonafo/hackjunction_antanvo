@@ -68,29 +68,27 @@ model = pickle.load(open(filename,'rb'))
 def intro():
     import streamlit as st
 
-    st.write("# Welcome to Streamlit! 👋")
+    st.write("# Welcome to Team European Triangle 👋")
     st.sidebar.success("Select a Page above.")
 
     st.markdown(
         """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
+        Working on the Antanvo Challenge, we find that being able to suggest the best next action to the customer. This keeps the customer in the loyalty program longer, while also enjoying it. And brings more profit to the business of course. 
+        
+        To implement this, we built a "next-step" recommender system, that uses the number of points a customer has accumulated, number days since last step and last activity to recommend what is the next best step. This best step is recommended based on the smallest churn probability possible.
 
-        **👈 Select a demo from the dropdown on the left** to see some examples
-        of what Streamlit can do!
+        **👈 Select a Page from the dropdown on the left** to navigate within the App!
 
-        ### Want to learn more?
+        ### Want to try out the Recommender?
 
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
+        - Check out the Recommender System Page.
+        - Happy to discuss our ideas - Team European Triangle 😉😊.
 
-        ### See more complex demos
+        ### Next Steps (If we had more time)
 
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
+        - Build more combinations of steps and calculate churn(opt_out) probability.
+        - Include more possible options in the dataset.
+        - Feedbacks Appreciated.
     """
     )
 
@@ -105,7 +103,7 @@ def main():
             last_step = st.selectbox('last_step',['Joined the Program'])
         
         with col2:
-            next_step = st.selectbox('recomended_next_step',['level_up'])
+            next_step = st.selectbox('recomended_next_step',['level_up','profile'])
         
         submit_button = st.form_submit_button(label='Submit')
         
@@ -126,8 +124,15 @@ def main():
     disp = disp.rename(columns={'opt_out_prob':'previous_churn_probability',
                         'preds':'new_churn_probability'})
     
+    #get weight
+    weight = 1/2.33   #ratio of level up to profile
+    
     if submit_button:
         st.success("Find below the churn probability of next steps")
+        disp['recommended_next_step'] = next_step
+        disp = disp[['action','recommended_next_step','previous_churn_probability','new_churn_probability']]
+        if next_step == 'level_up':
+            disp['new_churn_probability'] = disp['new_churn_probability']*weight
         st.table(disp[disp['action'] == last_step].reset_index(drop=True))
         
 
@@ -136,7 +141,7 @@ def main():
 
 
 page_names_to_funcs = {
-    "introduction": intro,
+    "Introduction": intro,
     "Recommender System": main
 }
 
