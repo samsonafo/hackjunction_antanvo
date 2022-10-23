@@ -127,7 +127,7 @@ def main():
                         'preds':'new_churn_probability'})
     
     if submit_button:
-        st.sidebar.success("Find below the churn probability of next steps")
+        st.success("Find below the churn probability of next steps")
         st.table(disp[disp['action'] == last_step].reset_index(drop=True))
         
 
